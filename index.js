@@ -5,11 +5,11 @@ const { LinearClient } = require('@linear/sdk');
 require('dotenv').config({ path: '.env.local' });
 
 
-// --- Configuration ---
-const VERCEL_TOKEN = process.env.VERCEL_TOKEN;
-const VERCEL_PROJECT_ID = process.env.VERCEL_PROJECT_ID;
-const LINEAR_API_KEY = process.env.LINEAR_API_KEY;
-const LINEAR_TEAM_ID = process.env.LINEAR_TEAM_ID;
+// --- Configuration (with .trim() to fix "Invalid character" errors) ---
+const VERCEL_TOKEN = (process.env.VERCEL_TOKEN || '').trim();
+const VERCEL_PROJECT_ID = (process.env.VERCEL_PROJECT_ID || '').trim();
+const LINEAR_API_KEY = (process.env.LINEAR_API_KEY || '').trim();
+const LINEAR_TEAM_ID = (process.env.LINEAR_TEAM_ID || '').trim();
 
 // --- Resilience Setup ---
 // Configure axios with retries for unstable network (high packet loss)
