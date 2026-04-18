@@ -1,0 +1,30 @@
+name: Vercel Error Monitor
+
+on:
+  schedule:
+    - cron: '*/30 * * * *' # Runs every 30 minutes
+  workflow_dispatch: # Allows manual triggering from the GitHub Actions UI
+
+jobs:
+  monitor:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        # Install the Linear SDK dynamically for the script
+        run: npm install @linear/sdk
+        
+      - name: Run script
+        run: node index.js
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+          LINEAR_API_KEY: ${{ secrets.LINEAR_API_KEY }}
+          LINEAR_TEAM_ID: ${{ secrets.LINEAR_TEAM_ID }} # Optional, will default to first team if not set
