@@ -18,8 +18,7 @@ jobs:
           node-version: '20'
 
       - name: Install dependencies
-        # Install the Linear SDK dynamically for the script
-        run: npm install @linear/sdk
+        run: npm install
         
       - name: Run script
         run: node index.js

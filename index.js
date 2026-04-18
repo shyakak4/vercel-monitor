@@ -1,7 +1,9 @@
 const axios = require('axios');
 const axiosRetry = require('axios-retry').default;
 const { LinearClient } = require('@linear/sdk');
+// Load environment variables from .env.local if present
 require('dotenv').config({ path: '.env.local' });
+
 
 // --- Configuration ---
 const VERCEL_TOKEN = process.env.VERCEL_TOKEN;
@@ -152,8 +154,15 @@ async function checkVercelErrors() {
 }
 
 // Ensure environment variables are loaded before running
+const isCI = process.env.GITHUB_ACTIONS === 'true';
+
 if (!VERCEL_TOKEN || !VERCEL_PROJECT_ID || !LINEAR_API_KEY) {
-    console.error("❌ Execution Aborted: Missing required environment variables in .env.local");
+    console.error("❌ Execution Aborted: Missing required environment variables.");
+    if (isCI) {
+        console.error("   Please check your GitHub Repository Secrets for: VERCEL_TOKEN, VERCEL_PROJECT_ID, and LINEAR_API_KEY.");
+    } else {
+        console.error("   Please ensure your .env.local file contains: VERCEL_TOKEN, VERCEL_PROJECT_ID, and LINEAR_API_KEY.");
+    }
     process.exit(1);
 }
 
