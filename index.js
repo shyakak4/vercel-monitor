@@ -25,46 +25,6 @@ axiosRetry(axios, {
     }
 });
 
-// Setup Linear Client
-// Note: Linear SDK uses global fetch if available. In Node 21+, it uses native fetch.
-// To make Linear SDK more robust in this environment, we override the fetch global.
-global.fetch = async (url, options) => {
-    try {
-        const response = await axios({
-            url: url.toString(),
-            method: options.method || 'GET',
-            data: options.body,
-            headers: options.headers,
-            timeout: 30000 // 30s timeout
-        });
-        
-        return {
-            ok: response.status >= 200 && response.status < 300,
-            status: response.status,
-            statusText: response.statusText,
-            headers: {
-                get: (name) => response.headers[name.toLowerCase()]
-            },
-            json: async () => response.data,
-            text: async () => JSON.stringify(response.data)
-        };
-    } catch (error) {
-        if (error.response) {
-            return {
-                ok: false,
-                status: error.response.status,
-                statusText: error.response.statusText,
-                headers: {
-                    get: (name) => error.response.headers[name.toLowerCase()]
-                },
-                json: async () => error.response.data,
-                text: async () => JSON.stringify(error.response.data)
-            };
-        }
-        throw error;
-    }
-};
-
 const linearClient = new LinearClient({ apiKey: LINEAR_API_KEY });
 
 async function checkVercelErrors() {
